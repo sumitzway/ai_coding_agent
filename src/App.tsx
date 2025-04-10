@@ -4,6 +4,9 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { Box, Container, Grid, Paper, IconButton, Tooltip, Alert, Tabs, Tab, CircularProgress } from '@mui/material';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
+import DownloadIcon from '@mui/icons-material/Download';
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 
 import PromptPane from './components/PromptPane';
 import CodeEditor from './components/CodeEditor';
@@ -357,6 +360,37 @@ function App() {
     setRefreshKey(prev => prev + 1);
   };
 
+  const handleDownload = async () => {
+    try {
+      const zip = new JSZip();
+      
+      // Recursive function to add files to zip
+      const addFilesToZip = (nodes: FileNode[], currentPath: string = '') => {
+        nodes.forEach(node => {
+          if (node.type === 'file' && node.content) {
+            zip.file(currentPath + node.name, node.content);
+          } else if (node.type === 'directory' && node.children) {
+            addFilesToZip(node.children, currentPath + node.name + '/');
+          }
+        });
+      };
+
+      // Start adding files from the root
+      if (files[0].children) {
+        addFilesToZip(files[0].children);
+      }
+
+      // Generate the zip file
+      const content = await zip.generateAsync({ type: 'blob' });
+      
+      // Save the zip file
+      saveAs(content, 'project-files.zip');
+    } catch (error) {
+      console.error('Error creating zip file:', error);
+      setError('Failed to create zip file');
+    }
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -367,12 +401,38 @@ function App() {
             top: 16, 
             right: 16, 
             zIndex: 1000,
-            bgcolor: 'background.paper',
-            borderRadius: '50%',
-            boxShadow: 2
+            display: 'flex',
+            gap: 1
           }}>
+            <Tooltip title="Download project files">
+              <IconButton 
+                onClick={handleDownload} 
+                color="primary"
+                sx={{ 
+                  bgcolor: 'background.paper',
+                  borderRadius: '50%',
+                  boxShadow: 2,
+                  '&:hover': {
+                    bgcolor: 'background.paper',
+                  }
+                }}
+              >
+                <DownloadIcon />
+              </IconButton>
+            </Tooltip>
             <Tooltip title={`Switch to ${mode === 'light' ? 'dark' : 'light'} mode`}>
-              <IconButton onClick={toggleTheme} color="inherit">
+              <IconButton 
+                onClick={toggleTheme} 
+                color="inherit"
+                sx={{ 
+                  bgcolor: 'background.paper',
+                  borderRadius: '50%',
+                  boxShadow: 2,
+                  '&:hover': {
+                    bgcolor: 'background.paper',
+                  }
+                }}
+              >
                 {mode === 'light' ? <Brightness4Icon /> : <Brightness7Icon />}
               </IconButton>
             </Tooltip>
