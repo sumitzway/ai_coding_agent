@@ -1,7 +1,6 @@
 import { Paper, Typography, IconButton, Snackbar, Box, Tabs, Tab, Tooltip } from '@mui/material';
 import Editor from '@monaco-editor/react';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { useState, useCallback, useEffect } from 'react';
 
 interface CodeEditorProps {
@@ -16,7 +15,6 @@ interface FileData {
 
 const CodeEditor = ({ code, onCodeChange }: CodeEditorProps) => {
   const [showCopied, setShowCopied] = useState(false);
-  const [showDownloaded, setShowDownloaded] = useState(false);
   const [activeFileIndex, setActiveFileIndex] = useState(0);
   const [files, setFiles] = useState<FileData[]>([{ name: 'Component.tsx', content: code }]);
 
@@ -57,26 +55,6 @@ const CodeEditor = ({ code, onCodeChange }: CodeEditorProps) => {
       setShowCopied(true);
     } catch (err) {
       console.error('Failed to copy code:', err);
-    }
-  };
-
-  // Function to download all files
-  const handleDownloadAllFiles = () => {
-    try {
-      files.forEach(file => {
-        const blob = new Blob([file.content], { type: 'text/plain' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = file.name;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-      });
-      setShowDownloaded(true);
-    } catch (err) {
-      console.error('Failed to download files:', err);
     }
   };
 
@@ -123,11 +101,6 @@ const CodeEditor = ({ code, onCodeChange }: CodeEditorProps) => {
           Generated Code
         </Typography>
         <Box sx={{ display: 'flex', gap: 1 }}>
-          <Tooltip title="Download all files">
-            <IconButton onClick={handleDownloadAllFiles} size="small">
-              <FileDownloadIcon />
-            </IconButton>
-          </Tooltip>
           <Tooltip title="Copy code">
             <IconButton onClick={handleCopy} size="small">
               <ContentCopyIcon />
@@ -180,12 +153,6 @@ const CodeEditor = ({ code, onCodeChange }: CodeEditorProps) => {
         autoHideDuration={2000}
         onClose={() => setShowCopied(false)}
         message="Code copied to clipboard"
-      />
-      <Snackbar
-        open={showDownloaded}
-        autoHideDuration={2000}
-        onClose={() => setShowDownloaded(false)}
-        message="Files downloaded successfully"
       />
     </Paper>
   );
