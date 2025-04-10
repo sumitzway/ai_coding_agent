@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import { Box, Container, Grid, Paper, IconButton, Tooltip, Alert, Tabs, Tab, CircularProgress } from '@mui/material';
+import { Box, Container, Grid, Paper, IconButton, Tooltip, Alert, CircularProgress } from '@mui/material';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import DownloadIcon from '@mui/icons-material/Download';
@@ -147,7 +147,6 @@ function App() {
   const [generatedCode, setGeneratedCode] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<number>(0);
   const [refreshKey, setRefreshKey] = useState<number>(0);
   const [files, setFiles] = useState<FileNode[]>([
     {
@@ -473,31 +472,20 @@ function App() {
                 selectedFile={selectedFile}
               />
             </Grid>
-            <Grid item xs={12} md={6} sx={{ p: 1, height: '100%' }}>
-              <Paper sx={{ p: 0, height: '100%', display: 'flex', flexDirection: 'column' }}>
-                <Tabs 
-                  value={activeTab} 
-                  onChange={(_, newValue) => setActiveTab(newValue)}
-                  sx={{ borderBottom: 1, borderColor: 'divider' }}
-                >
-                  <Tab label="Code Editor" />
-                  <Tab label="Preview" />
-                </Tabs>
-                <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
-                  {activeTab === 0 ? (
-                    <CodeEditor 
-                      code={generatedCode} 
-                      onCodeChange={handleCodeChange} 
-                    />
-                  ) : (
-                    <PreviewPane 
-                      code={generatedCode} 
-                      onRefresh={handleRefreshPreview}
-                      refreshKey={refreshKey}
-                    />
-                  )}
-                </Box>
-              </Paper>
+            <Grid item xs={12} md={6} sx={{ p: 1, height: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <Box sx={{ flex: 1 }}>
+                <CodeEditor
+                  code={generatedCode}
+                  onCodeChange={handleCodeChange}
+                />
+              </Box>
+              <Box sx={{ flex: 1 }}>
+                <PreviewPane
+                  code={generatedCode}
+                  refreshKey={refreshKey}
+                  onRefresh={handleRefreshPreview}
+                />
+              </Box>
             </Grid>
           </Grid>
         </Box>

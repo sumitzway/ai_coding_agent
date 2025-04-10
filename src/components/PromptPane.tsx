@@ -31,7 +31,7 @@ const PromptPane = ({ onPromptSubmit }: PromptPaneProps) => {
   const [showErrorLog, setShowErrorLog] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
-      text: "Hello! I'm your AI assistant powered by OpenAI. I can help you create and modify React Native components. Just describe what component you'd like to create or how you'd like to modify existing code.",
+      text: "Hi there! I'm your AI assistant built with OpenAI technology. I'm here to help you design and customize React Native components. Just let me know what you need to build or tweak, and I'll handle the code for you!",
       isUser: false,
       timestamp: new Date(),
       type: 'response'
@@ -91,10 +91,7 @@ const PromptPane = ({ onPromptSubmit }: PromptPaneProps) => {
     <Paper sx={{ height: '100%', p: 2, display: 'flex', flexDirection: 'column' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
         <Typography variant="h6">
-          Chat with AI Assistant
-        </Typography>
-        <Typography variant="caption" color="text.secondary" sx={{ ml: 1 }}>
-          Powered by OpenAI
+          Chat with AI Coding Agent
         </Typography>
         {errorLogs.length > 0 && (
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
